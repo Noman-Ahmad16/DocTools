@@ -1,0 +1,21 @@
+{
+  "short_name": "DocTools",
+  "name": "DocTools - Document Toolkit",
+  "description": "Professional Scanner & Document Editor",
+  "icons": [
+    {
+      "src": "/doctools_icon.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/doctools_icon.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#14b8a6",
+  "background_color": "#020617"
+}
