@@ -1,5 +1,5 @@
 const pptxgen = require('pptxgenjs');
-const pdfParse = require('pdf-parse');
+const { PDFParse } = require('pdf-parse');
 const mammoth = require('mammoth');
 const fs = require('fs').promises;
 const path = require('path');
@@ -9,7 +9,8 @@ exports.pdfToPpt = async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ error: 'No PDF file uploaded' });
     const pdfBytes = await fs.readFile(req.file.path);
-    const pdfData = await pdfParse(pdfBytes);
+    const parser = new PDFParse({ data: pdfBytes });
+    const pdfData = await parser.getText();
     const lines = pdfData.text.split('\n').filter(l => l.trim());
     
     let pres = new pptxgen();
@@ -24,7 +25,7 @@ exports.pdfToPpt = async (req, res) => {
     res.setHeader('Content-Disposition', `attachment; filename="${outName}"`);
     res.send(Buffer.from(buffer));
   } catch (err) {
-    console.error(err);
+    console.error('PDF to PPT Error:', err.message, err.stack);
     res.status(500).json({ error: 'Failed to convert PDF to PPT' });
   }
 };

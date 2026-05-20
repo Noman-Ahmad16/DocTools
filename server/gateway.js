@@ -9,7 +9,10 @@ const PORT = 5000;
 app.use(cors());
 
 // Multipart routes — raw body forward
-const proxyOptions = { proxyReqPathResolver: req => req.originalUrl };
+const proxyOptions = { 
+  proxyReqPathResolver: req => req.originalUrl,
+  parseReqBody: false 
+};
 app.use('/api/pdf',      httpProxy('http://localhost:5001', proxyOptions));
 app.use('/api/image',    httpProxy('http://localhost:5002', proxyOptions));
 app.use('/api/word',     httpProxy('http://localhost:5003', proxyOptions));

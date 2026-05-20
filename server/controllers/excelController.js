@@ -1,6 +1,6 @@
 const ExcelJS = require('exceljs');
 const docx = require('docx');
-const pdfParse = require('pdf-parse');
+const { PDFParse } = require('pdf-parse');
 const mammoth = require('mammoth');
 const fs = require('fs').promises;
 
@@ -9,7 +9,8 @@ exports.pdfToExcel = async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ error: 'No PDF file uploaded' });
     const pdfBytes = await fs.readFile(req.file.path);
-    const pdfData = await pdfParse(pdfBytes);
+    const parser = new PDFParse({ data: pdfBytes });
+    const pdfData = await parser.getText();
     const lines = pdfData.text.split('\n').filter(l => l.trim());
     const workbook = new ExcelJS.Workbook();
     const sheet = workbook.addWorksheet('Extracted Data');

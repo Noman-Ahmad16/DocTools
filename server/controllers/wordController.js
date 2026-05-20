@@ -2,7 +2,7 @@ const mammoth = require('mammoth');
 const docx = require('docx');
 const ExcelJS = require('exceljs');
 const pptxgen = require('pptxgenjs');
-const pdfParse = require('pdf-parse');
+const { PDFParse } = require('pdf-parse');
 const fs = require('fs').promises;
 
 // PDF → Word
@@ -10,7 +10,8 @@ exports.pdfToWord = async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ error: 'No PDF file uploaded' });
     const pdfBytes = await fs.readFile(req.file.path);
-    const pdfData = await pdfParse(pdfBytes);
+    const parser = new PDFParse({ data: pdfBytes });
+    const pdfData = await parser.getText();
     const text = pdfData.text;
     const lines = text.split('\n').filter(l => l.trim());
     const doc = new docx.Document({
