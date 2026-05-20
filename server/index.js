@@ -58,9 +58,10 @@ const cleanupFiles = () => {
 
 setInterval(cleanupFiles, 10 * 60 * 1000);
 
-// Basic route
-app.get('/', (req, res) => {
-  res.send('DocTools API is running');
+// Serve React static files (frontend)
+app.use(express.static(path.join(__dirname, '../dist')));
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../dist/index.html'));
 });
 
 app.listen(PORT, () => {

@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const httpProxy = require('express-http-proxy');
+const path = require('path');
 
 const app = express();
 const PORT = 5000;
@@ -8,12 +9,13 @@ const PORT = 5000;
 app.use(cors());
 
 // Multipart routes — raw body forward
-app.use('/api/pdf',      httpProxy('http://localhost:5001'));
-app.use('/api/image',    httpProxy('http://localhost:5002'));
-app.use('/api/word',     httpProxy('http://localhost:5003'));
-app.use('/api/excel',    httpProxy('http://localhost:5003'));
-app.use('/api/ppt',      httpProxy('http://localhost:5003'));
-app.use('/api/document', httpProxy('http://localhost:5003'));
+const proxyOptions = { proxyReqPathResolver: req => req.originalUrl };
+app.use('/api/pdf',      httpProxy('http://localhost:5001', proxyOptions));
+app.use('/api/image',    httpProxy('http://localhost:5002', proxyOptions));
+app.use('/api/word',     httpProxy('http://localhost:5003', proxyOptions));
+app.use('/api/excel',    httpProxy('http://localhost:5003', proxyOptions));
+app.use('/api/ppt',      httpProxy('http://localhost:5003', proxyOptions));
+app.use('/api/document', httpProxy('http://localhost:5003', proxyOptions));
 
 // Admin route — JSON only, handle manually to avoid body stream conflict
 app.use('/api/admin', express.json(), (req, res) => {
@@ -44,8 +46,10 @@ app.use('/api/admin', express.json(), (req, res) => {
   proxy.end();
 });
 
-app.get('/', (req, res) => {
-  res.send('DocTools API Gateway is running');
+// Serve React static files (frontend)
+app.use(express.static(path.join(__dirname, '../dist')));
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../dist/index.html'));
 });
 
 app.listen(PORT, () => {
