@@ -48,7 +48,7 @@ app.use('/api/admin', express.json(), (req, res) => {
 
 // Serve React static files (frontend)
 app.use(express.static(path.join(__dirname, '../dist')));
-app.get('*', (req, res) => {
+app.get(/(.*)/, (req, res) => {
   res.sendFile(path.join(__dirname, '../dist/index.html'));
 });
 
